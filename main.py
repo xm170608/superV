@@ -1,8 +1,10 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 import os
-import time
+import platform
+import datetime
 import psutil
+import net
 
 BYTES_2_GB = 1024 ** 3
 
@@ -24,8 +26,8 @@ def _get_memory_state():
     return _mem_state
 
 def _get_cpu_state():
-
-    _cpu_count = psutil.cpu_count(logical=False)
+    _cpu_state = ''
+    _cpu_count = psutil.cpu_count(logical = False)
     _cpu_count_logical = psutil.cpu_count()
     _cpu_percent = psutil.cpu_percent(1)
 
@@ -52,19 +54,31 @@ def _get_disk_state():
 
     return _disk_state
 
+def _get_boot_time():
+    _boot_time = ''
+    _boot_time = '本机启动时间：' + datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+
+    return _boot_time
+
+def _get_server_state():
+    _server_state = ''
+    _os_version = platform.platform()
+    _cpu = platform.processor()
+
+    _server_state = '操作系统： %s ; CPU: %s' %(
+        _os_version,
+        _cpu)
+
+    return _server_state
+
 
 def main():
-    try:
-        _interval = 0
-        while True:
-            print(_get_cpu_state())
-            print(_get_memory_state())
-            print(_get_disk_state())
-            _interval = 1
-            time.sleep(5)
-    except (KeyboardInterrupt, SystemExit):
-        pass
-
+    print()
+    print(_get_boot_time())
+    print(_get_cpu_state())
+    print(_get_memory_state())
+    print(_get_disk_state())
+    print(net.main())
 
 if __name__ == '__main__':
     main()
